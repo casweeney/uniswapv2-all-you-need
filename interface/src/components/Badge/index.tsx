@@ -1,0 +1,72 @@
+import { readableColor } from 'polished'
+import { PropsWithChildren } from 'react'
+import styled, { DefaultTheme } from 'styled-components/macro'
+
+export enum BadgeVariant {
+  DEFAULT = 'DEFAULT',
+  NEGATIVE = 'NEGATIVE',
+  POSITIVE = 'POSITIVE',
+  PRIMARY = 'PRIMARY',
+  WARNING = 'WARNING',
+
+  WARNING_OUTLINE = 'WARNING_OUTLINE',
+}
+
+interface BadgeProps {
+  variant?: BadgeVariant
+}
+
+function pickBackgroundColor(variant: BadgeVariant | undefined, theme: DefaultTheme): string {
+  switch (variant) {
+    case BadgeVariant.NEGATIVE:
+      return theme.accentFailure
+    case BadgeVariant.POSITIVE:
+      return theme.accentSuccess
+    case BadgeVariant.PRIMARY:
+      return theme.accentAction
+    case BadgeVariant.WARNING:
+      return theme.accentWarning
+    case BadgeVariant.WARNING_OUTLINE:
+      return 'transparent'
+    default:
+      return theme.backgroundInteractive
+  }
+}
+
+function pickBorder(variant: BadgeVariant | undefined, theme: DefaultTheme): string {
+  switch (variant) {
+    case BadgeVariant.WARNING_OUTLINE:
+      return `1px solid ${theme.accentWarning}`
+    default:
+      return 'unset'
+  }
+}
+
+function pickFontColor(variant: BadgeVariant | undefined, theme: DefaultTheme): string {
+  switch (variant) {
+    case BadgeVariant.NEGATIVE:
+      return readableColor(theme.accentFailure)
+    case BadgeVariant.POSITIVE:
+      return readableColor(theme.accentSuccess)
+    case BadgeVariant.WARNING:
+      return readableColor(theme.accentWarning)
+    case BadgeVariant.WARNING_OUTLINE:
+      return theme.accentWarning
+    default:
+      return readableColor(theme.backgroundInteractive)
+  }
+}
+
+const Badge = styled.div<PropsWithChildren<BadgeProps>>`
+  align-items: center;
+  background-color: ${({ theme, variant }) => pickBackgroundColor(variant, theme)};
+  border: ${({ theme, variant }) => pickBorder(variant, theme)};
+  border-radius: 0.5rem;
+  color: ${({ theme, variant }) => pickFontColor(variant, theme)};
+  display: inline-flex;
+  padding: 4px 6px;
+  justify-content: center;
+  font-weight: 500;
+`
+
+export default Badge
