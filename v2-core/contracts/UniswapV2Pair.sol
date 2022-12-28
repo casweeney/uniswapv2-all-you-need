@@ -12,15 +12,15 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     using SafeMath  for uint;
     using UQ112x112 for uint224;
 
-    uint public constant MINIMUM_LIQUIDITY = 10**3;
+    uint public constant MINIMUM_LIQUIDITY = 10**3; // This is set and used to avoid division by zero
     bytes4 private constant SELECTOR = bytes4(keccak256(bytes('transfer(address,uint256)')));
 
     address public factory;
     address public token0;
     address public token1;
 
-    uint112 private reserve0;           // uses single storage slot, accessible via getReserves
-    uint112 private reserve1;           // uses single storage slot, accessible via getReserves
+    uint112 private reserve0;        // uses single storage slot, accessible via getReserves
+    uint112 private reserve1;        // uses single storage slot, accessible via getReserves
     uint32  private blockTimestampLast; // uses single storage slot, accessible via getReserves
 
     uint public price0CumulativeLast;
@@ -115,8 +115,10 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         uint amount1 = balance1.sub(_reserve1);
 
         bool feeOn = _mintFee(_reserve0, _reserve1);
+
         uint _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
         if (_totalSupply == 0) {
+            //first liquidity
             liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);
            _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens
         } else {

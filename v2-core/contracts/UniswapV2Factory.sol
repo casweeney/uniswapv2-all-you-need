@@ -8,6 +8,7 @@ contract UniswapV2Factory is IUniswapV2Factory {
     address public feeToSetter;
 
     mapping(address => mapping(address => address)) public getPair;
+
     address[] public allPairs;
 
     event PairCreated(address indexed token0, address indexed token1, address pair, uint);
@@ -30,6 +31,7 @@ contract UniswapV2Factory is IUniswapV2Factory {
         assembly {
             pair := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
+        
         IUniswapV2Pair(pair).initialize(token0, token1);
         getPair[token0][token1] = pair;
         getPair[token1][token0] = pair; // populate mapping in the reverse direction
